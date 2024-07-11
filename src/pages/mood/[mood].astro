@@ -38,6 +38,7 @@ export async function getStaticPaths() {
 }
 
 const { mood } = Astro.props
+
 const movie = mood.movies[Math.floor(Math.random() * mood.movies.length)]
 movie.genres = genres.filter((genre) => mood.genres.includes(genre.id))
 ---
@@ -57,7 +58,6 @@ movie.genres = genres.filter((genre) => mood.genres.includes(genre.id))
       <h2>{mood.description}</h2>
 
       <Movie movie={movie} />
-
     </div>
   </section>
   
