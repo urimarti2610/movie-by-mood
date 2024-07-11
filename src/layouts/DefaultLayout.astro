@@ -2,15 +2,14 @@
 import '@astrojs/tailwind/base.css'
 import '../assets/scss/globals.scss'
 import SiteMeta from '../components/SiteMeta.astro'
-import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 
 const {
-  title = 'Astro',
-  description = 'A starter project with accessibility features using Astro static site builder. Contains accessible landmarks, skip links, a dark mode color scheme, better focus outline and keyboard menu navigation.',
-  url,
+  title = 'Mood2Movie',
+  description = `Discover the perfect movie to match your mood with our innovative recommendation platform. Whether you're feeling happy, sad, adventurous, or in need of a good laugh, we provide personalized movie suggestions to fit every emotion. Explore a diverse library of films across all genres and let us help you find your next favorite movie, tailored to how you feel. Get instant recommendations and transform your movie-watching experience based on your current mood!`,
+  url = '',
   image = '/social-preview-image.png',
-  author = 'Mark Teekman',
+  author = 'urimarti.com',
 } = Astro.props
 ---
 
@@ -28,13 +27,12 @@ const {
       description={description.substring(0, 100)}
       url={Astro.site
         ? `${Astro.site}/${title.toLowerCase().replaceAll(' ', '-')}`
-        : `https://accessible-astro.dev/${title.toLowerCase().replaceAll(' ', '-')}`}
+        : url}
       image={image}
       author={author}
     />
   </head>
   <body>
-    <Header />
     <main id="main-content" transition:animate="fade">
       <slot />
     </main>

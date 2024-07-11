@@ -1,0 +1,86 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import { moods } from '../../assets/js/moods'
+import { genres } from '../../assets/js/genres'
+import { Breadcrumbs, BreadcrumbsItem } from 'accessible-astro-components'
+import Movie from '../../components/Movie.astro'
+import {TheMovieDbClient} from '../../libs/themoviedb/client'
+
+
+export async function getStaticPaths() {
+const theMovieDbClient = new TheMovieDbClient()
+
+
+  const promises = genres.map(({id}) => theMovieDbClient.getMoviesByGenreId(id))
+  const movies = (await Promise.all(promises)).flat()
+
+  const moviesByGenre = movies.reduce((acc, movie) => {
+    for (const genre of movie.genre_ids) {
+      if (!acc[genre]) {
+        acc[genre] = []
+      }
+
+      acc[genre].push(movie)
+    }
+
+    return acc
+  }, {})
+
+  return moods.map((mood) => {
+    mood.movies = mood.genres.map((genre) => moviesByGenre[genre]).flat()
+
+    return {
+      params: {
+        mood: mood.name.replaceAll(' ', '-').toLowerCase()
+      },
+      props: { mood },
+    }
+  })
+}
+
+const { mood } = Astro.props
+const movie = mood.movies[Math.floor(Math.random() * mood.movies.length)]
+movie.genres = genres.filter((genre) => mood.genres.includes(genre.id))
+---
+
+<DefaultLayout title={mood.name} description={mood.description} url={mood.name.toLowerCase()}>
+  <div class="container">
+    <div class="mt-12">
+      <Breadcrumbs>
+        <BreadcrumbsItem href="/" label="Home" />
+        <BreadcrumbsItem currentPage={true} label={mood.name} />
+      </Breadcrumbs>
+    </div>
+  </div>
+  <section class="my-12">
+    <div class="container">
+      <h1>{mood.name}</h1><br />
+      <h2>{mood.description}</h2>
+    </div>
+  </section>
+   
+
+  <section class="my-12">
+    <div class="container">
+      <Movie movie={movie} />
+    </div>
+  </section>
+
+</DefaultLayout>
+
+<style lang="scss">
+  ul {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 4rem;
+
+    @media (min-width: 550px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 2rem;
+    }
+
+    @media (min-width: 950px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
