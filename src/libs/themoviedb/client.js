@@ -1,21 +1,21 @@
 export class TheMovieDbClient {
+    locale = Intl.DateTimeFormat().resolvedOptions().locale
     apiKey = 'cea68b520beecac6718820e4ac576c3a'
     baseUrl = 'https://api.themoviedb.org/3/'
 
     async getMoviesByGenreId(id) {
-        const response = await fetch(`${this.baseUrl}discover/movie?include_adult=true&include_video=true&with_genres=${id}&api_key=${this.apiKey}`)
+        const response = await fetch(`${this.baseUrl}discover/movie?include_adult=true&include_video=true&with_genres=${id}&api_key=${this.apiKey}&language=${this.locale}`)
         const { results } = await response.json()
 
         return results
     }
 
-    async getMovieInfo(movie) {
-        const response = await fetch(`${this.baseUrl}movie/${movie.id}?api_key=${this.apiKey}`)
-        const data = await response.json()
+    async getWhereToWatch(movie) {
+        const locale = this.locale.split('-')[1] ?? 'US'
 
-        return {
-            ...movie,
-            ...data,
-        }
+        const response = await fetch(`${this.baseUrl}movie/${movie.id}/watch/providers?api_key=${this.apiKey}`)
+        const { results } = await response.json()
+
+        return results[locale] ?? {}
     }
 }

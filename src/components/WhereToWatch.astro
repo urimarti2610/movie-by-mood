@@ -1,0 +1,19 @@
+---
+import {TheMovieDbClient} from '../libs/themoviedb/client'
+import Provider from './Provider.astro'
+
+const { movie } = Astro.props
+
+const theMovieDbClient = new TheMovieDbClient()
+const whereToWatch = await theMovieDbClient.getWhereToWatch(movie)
+---
+
+<section class=`my-12`>
+  <div class="container">
+    <div class="grid grid-cols-1 gap-2">
+      <Provider type="flatrate" providers={whereToWatch} />
+      <Provider type="buy" providers={whereToWatch} />
+      <Provider type="rent" providers={whereToWatch} />
+    </div>
+  </div>
+</section>

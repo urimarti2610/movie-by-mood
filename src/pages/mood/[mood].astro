@@ -8,8 +8,7 @@ import {TheMovieDbClient} from '../../libs/themoviedb/client'
 
 
 export async function getStaticPaths() {
-const theMovieDbClient = new TheMovieDbClient()
-
+  const theMovieDbClient = new TheMovieDbClient()
 
   const promises = genres.map(({id}) => theMovieDbClient.getMoviesByGenreId(id))
   const movies = (await Promise.all(promises)).flat()

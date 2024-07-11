@@ -1,0 +1,37 @@
+---
+import { Media } from "accessible-astro-components"
+
+const { providers, type } = Astro.props
+
+const types = {
+    flatrate: {
+        name: 'Streaming',
+        description: 'Watch on these streaming services',
+    },
+    buy: {
+        name: 'Buy',
+        description: 'Buy on these services',
+    },
+    rent: {
+        name: 'Rent',
+        description: 'Rent on these services',
+    },
+}
+
+const currentProvider = providers[type]
+
+if (!currentProvider || currentProvider.length === 0) {
+    return ''
+}
+
+const currentType = types[type]
+---
+
+<div class="mb-4">
+    <h4>{currentType.name}</h4>
+    <p>{currentType.description}</p>
+
+    <div class="flex items-center gap-4">
+        {currentProvider.map(n => <a href={providers.link} target="_blank"><Media class="rounded-md w-12" src=`https://image.tmdb.org/t/p/w500${n.logo_path}` /></a>)}
+    </div> 
+</div>
